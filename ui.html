@@ -1,0 +1,278 @@
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<div class="header">
+    <div class="left_header" id="properties_button"><p>Properties</p></div>
+    <div class="right_header" id="about_button"><p>About</p></div>
+    <div class="parameters">
+    <div class="container">
+        <p>Basic parameters</p>
+        <span>width <input type="number" id="width" value="600" class="set-size input-style"></span>
+        <span>height <input type="number" id="height" value="200" class="set-size input-style"></span><br />
+    </div>
+
+    <div class="container">
+        <span><b>Set bars by</b></span>
+        <input type="radio" id="bars_choice_number" name="set_bars" value="number" checked>
+        <label for="bars_choice_number">number</label>
+        <input type="radio" id="bars_choice_width" name="set_bars" value="width">
+        <label for="bars_choice_width">width</label><br /><br /><br />
+        <span id="bars_choice_number_label">number <input type="number" id="bars_number" value="10" class="set-size input-style" style="width:75px;"></span>
+        <span id="bars_choice_width_label" style="opacity:0.4;">width <input type="number" id="bars_width" value="50" class="set-size input-style" disabled></span><br /><br />
+        <span>inner margin <input type="number" id="bars_margin" value="10" class="set-size input-style"></span>
+    </div>
+
+    <div class="container">
+        <p>Data series</p>
+        <span>number of series<input type="number" id="data_series_number" value="1" class="set-size input-style"></span><br /><br /><br />
+        <span><b>Typology</b></span>
+        <input type="radio" id="grouped" name="grouped_stacked" value="grouped">
+        <label for="grouped">grouped</label>
+        <input type="radio" id="stacked" name="grouped_stacked" value="stacked" checked>
+        <label for="stacked">stacked</label><br /><br /><br /><br />
+        <span><b>Variability</b></span>
+        <input type="radio" id="variability_low" name="variability" value="low" checked>
+        <label for="variability_low">low</label>
+        <input type="radio" id="variability_medium" name="variability" value="medium">
+        <label for="variability_medium">medium</label>
+        <input type="radio" id="variability_high" name="variability" value="high">
+        <label for="variability_high">high</label>
+    </div>
+
+    <div class="container">
+        <p>Color palette</p>
+        <input type="radio" id="categorical_color" name="color" value="categorical" checked>
+        <label for="categorical_color">categorical</label>
+        <input type="radio" id="sequential_color" name="color" value="sequential">
+        <label for="sequential_color">sequential</label>
+        <input type="radio" id="divergent_color" name="color" value="divergent">
+        <label for="divergent_color">divergent</label>
+    </div>
+
+    <div class="container"><br />
+        <span><b>Background grid</b></span>
+        <input type="radio" id="grid_yes" name="grid" value="yes" checked>
+        <label for="grid_yes">yes</label>
+        <input type="radio" id="grid_no" name="grid" value="no">
+        <label for="grid_no">no</label><br /><br /><br /><br />
+        <span><b>Labels</b></span>
+        <input type="radio" id="labels_yes" name="labels" value="yes" checked>
+        <label for="labels_yes">yes</label>
+        <input type="radio" id="labels_no" name="labels" value="no">
+        <label for="labels_no">no</label>
+    </div>
+
+    <button id="create" class="createButton">Create</button>
+</div>
+
+<div class="about" id="about">
+    <div class="avatar"></div>
+    <span>My name is Giovanni Magni and I am a Data Visualization Designer currently working at <a target="_blank" href="https://www.elastic.co/">Elastic</a>. You can find me on <a target="_blank" href="https://twitter.com/P_Maravich">twitter</a>, <a target="_blank" href="https://www.linkedin.com/in/giovanni-magni-6401a661/">linkedin</a> and <a target="_blank" href="https://github.com/gvnmagni">github</a>.<br /><br />
+        This plugin has been made to simplify the creation of precise and custom barcharts. The UI is clearly inspired by the work of <a target="_blank" href="https://twitter.com/latestaaron">Aaron M. Wright</a> who created a series of great plugins, go check his work!</span>
+</div>
+
+
+
+
+<script>
+
+document.getElementById('create').onclick = () => {
+    
+  const width = parseInt(document.getElementById('width').value, 10);
+
+  const height = parseInt(document.getElementById('height').value, 10);
+  
+  const set_bars_choices = document.querySelector('input[name="set_bars"]:checked').value;
+  const bars_number = parseInt(document.getElementById('bars_number').value, 10);
+  const bars_width = parseInt(document.getElementById('bars_width').value, 10);
+  const bars_margin = parseInt(document.getElementById('bars_margin').value, 10);
+
+  let data_series = parseInt(document.getElementById('data_series_number').value, 10);
+  if (data_series > 7)
+    data_series = 8;
+
+  const typology = document.querySelector('input[name="grouped_stacked"]:checked').value;
+  const variability = document.querySelector('input[name="variability"]:checked').value;
+
+  const color_palette = document.querySelector('input[name="color"]:checked').value;
+
+  const grid = document.querySelector('input[name="grid"]:checked').value;
+  const labels = document.querySelector('input[name="labels"]:checked').value;
+  
+  parent.postMessage({ pluginMessage: { type: 'create-barchart', width, height, set_bars_choices, bars_number, bars_width, bars_margin, data_series, typology, variability, color_palette, grid, labels } }, '*')
+}
+
+document.getElementById('bars_choice_number').onclick = () => {
+    document.getElementById('bars_width').disabled = true;
+    document.getElementById("bars_choice_number_label").style.opacity = 1.0;
+    document.getElementById("bars_choice_width_label").style.opacity = 0.4;
+    document.getElementById('bars_number').disabled = false;
+}
+
+document.getElementById('bars_choice_width').onclick = () => {
+    document.getElementById('bars_width').disabled = false;
+    document.getElementById("bars_choice_number_label").style.opacity = 0.4;
+    document.getElementById("bars_choice_width_label").style.opacity = 1.0;
+    document.getElementById('bars_number').disabled = true;
+}
+
+document.getElementById('about_button').onclick = () => {
+    document.getElementById('about').style.display = "block";
+    document.getElementById('about_button').style.color = "#333";
+    document.getElementById('properties_button').style.color = "#b3b3b3";
+}
+
+document.getElementById('properties_button').onclick = () => {
+    document.getElementById('about').style.display = "none";
+    document.getElementById('about_button').style.color = "#b3b3b3";
+    document.getElementById('properties_button').style.color = "#333";
+}
+
+</script>
+
+
+
+
+<style>
+    * {
+        -moz-box-sizing: border-box; 
+        -webkit-box-sizing: border-box; 
+        box-sizing: border-box; 
+    }
+    
+    body{
+        color:#333;
+        font-family: 'Roboto', sans-serif;
+        font-size: 12px;
+        background-color: #f1f1f1;
+    }
+
+    p{
+        font-weight: 600;
+    }
+
+    a{
+        color: #0075ff;
+        text-decoration: none;
+    }
+
+    
+
+    a:hovered{
+        color: #0075ff;
+    }
+
+    a:visited{
+        color: #0075ff;
+    }
+
+    .createButton{
+        width:300px;
+        height: 30px;
+        background-color: #0075ff;
+        color: white;
+        border:0px;
+        position:fixed;
+        bottom: 0;
+        left:0;
+    }
+
+    .input-style{
+        background-color:#fff;
+        border: 1px solid #e1e1e1;
+        border-radius: 2px;
+    }
+
+    .input-style:disabled{
+        opacity: 0.4;
+    }
+    .set-size{
+        width:80px;
+        height:24px;  
+        padding-left: 10px;
+        margin-left: 3px;
+        margin-right: 6px;
+        margin-top:00px;
+    }
+
+    .container{
+        background-color: #fff;
+        width:280px;
+        margin:auto;
+        border-radius: 5px;
+        padding-left:10px;
+        padding-right:10px;
+        padding-bottom:15px;
+        padding-top:5px;
+        margin-bottom:10px;
+    }
+
+    .header{
+        background-color:#fff;
+        border-bottom:1px solid #dfdfdf;
+        border-top:1px solid #dfdfdf;
+        height: 30px;
+        width:300px;
+        padding-left: 10px;
+        position: fixed;
+        top:0;
+        left:0;
+        line-height: 5px;
+    }
+
+    .parameters{
+        position: fixed;
+        top:40;
+        overflow: scroll;
+    }
+
+    .about{
+        position: fixed;
+        top:30;
+        left:0;
+        width:100%;
+        height:490px;
+        background-color: #f1f1f1;
+        padding-left:30px;
+        padding-right:60px;
+        line-height: 14px;
+        font-size: 12px;
+        display:none;
+    }
+
+    .avatar{
+        width:60px;
+        height:60px;
+        border-radius: 30px;
+        margin-top:100px;
+        margin-bottom:20px;
+        background-image: url('data:image/jpeg;base64,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')
+;
+    }
+
+    .left_header{
+        width:65px;
+        height:100%;
+        position: absolute;
+        top:0;
+        left:10;
+        cursor:pointer;
+    }
+
+    .right_header{
+        width:45px;
+        height:100%;
+        text-align: right;
+        position: absolute;
+        top:0;
+        right:10;
+        color:#b3b3b3;
+        cursor:pointer;
+
+    }
+
+   
+
+
+</style>
