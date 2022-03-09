@@ -80,6 +80,8 @@ figma.ui.onmessage = msg => {
 
     // ---------------------------------
     // Create chart frame
+
+    const center = figma.viewport.center;
     const chart_frame = figma.createFrame();
     chart_frame.resizeWithoutConstraints(msg.width, msg.height);
     chart_frame.clipsContent = false;
@@ -295,104 +297,10 @@ figma.ui.onmessage = msg => {
         chart_group.resize(chart_group.width, msg.height-bottomLabelsMargin-30);
         chart_group.y = 0+(msg.height-bottomLabelsMargin-chart_group.height);
 
-     /*
-    
-    for (let k=0; k<msg.lines; k++){
-
-        const color = {r:colors[k].r/255, g:colors[k].g/255, b:colors[k].b/255};
-        const path = figma.createVector();
-        path.name = "Line_"+k;
-        path.strokeCap = "ROUND";
-        path.strokeJoin = "ROUND";
-        let d = "";
-
-        // ---------------------------------
-        // Randomize path points
-        let points = [];
-        for (var i=0; i<msg.pointsCount; i++)
-        {
-            y = (Math.floor(Math.random()*randomDomain)+offset)
-            x = leftLabelsMargin + (i*((msg.width-leftLabelsMargin)/(msg.pointsCount-1)));
-            points.push({x : x, y : y});
-        }
-
-        const bezier_handler_x = (msg.width/(msg.pointsCount-1))/3;
-        
-        // ---------------------------------
-        // Create path d attribute
-        if (msg.line_style === 'edged'){
-            for (var i=0; i<msg.pointsCount; i++)
-            {
-            if (i == 0)
-                d = d + "M "+ leftLabelsMargin +" " + points[i].y;    
-            else
-                d = d + " L " + points[i].x + " " + points[i].y;
-            }
-        } else if (msg.line_style === 'curved'){
-            for (var i=0; i<(msg.pointsCount-1); i++)
-            {
-            if (i == 0)
-                d = d + "M "+ leftLabelsMargin +" " + points[i].y + " C " + (points[i].x+bezier_handler_x) + " " + points[i].y + " " + (points[i+1].x-bezier_handler_x) + " " + points[i+1].y + " " +points[i+1].x + " " + points[i+1].y;    
-            else
-                d = d + " C " + (points[i].x+bezier_handler_x) + " " + points[i].y + " " + (points[i+1].x-bezier_handler_x) + " " + points[i+1].y + " " +points[i+1].x + " " + points[i+1].y;
-            }
-        }
-        
-        path.vectorPaths = [{
-            windingRule: "NONE",
-            data: d,
-        }]
-
-
-        const strokes = clone(path.strokes)
-        strokes[0] = { type: 'SOLID', color: color};
-        path.strokes = strokes;
-        path.strokeWeight = 2;
-
-
-
-        chart_frame.appendChild(path);
-        nodes.push(path)
-
-
-        // ---------------------------------
-        // Add circles to path vertex
-        if (msg.dots === 'yes')
-        {
-            for (var i=0; i<msg.pointsCount; i++)
-            {
-                let circle = figma.createEllipse();
-                circle.name = "line_dots_"+identifier+"_"+k;
-                circle.x = points[i].x - circleSize/2;
-                circle.y = points[i].y - circleSize/2; 
-                circle.fills = [{type: 'SOLID', color: {r:1, g:1, b:1}}];
-
-                circle.strokes = strokes;
-                circle.strokeWeight = 2;
-                circle.strokeAlign = 'OUTSIDE'
-
-                circle.resize(circleSize, circleSize);
-                chart_frame.appendChild(circle);
-                nodes.push(circle)
-            }
-
-            // ---------------------------------
-            // Group dots
-            const dots = figma.currentPage.findAll(n => n.name === "line_dots_"+identifier+"_"+k);
-            const dots_group = figma.group(dots, chart_frame);
-            dots_group.name = "Dots";
-        
-            const linechart_group = figma.group([dots_group,path],chart_frame);
-            linechart_group.name = "Linechart_"+k;
-        }
-
-}
-
-    figma.currentPage.selection = [chart_frame];
-    figma.viewport.scrollAndZoomIntoView([chart_frame]);
-
-    */
+        chart_frame.x = center.x-(msg.width/2);
+        chart_frame.y = center.y-(msg.height/2);
   }
+  
   figma.closePlugin();
 };
 
